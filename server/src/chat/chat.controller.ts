@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Headers,
+  Param,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -26,6 +27,18 @@ export class ChatController {
       return { success: false, message: 'Invalid token.' };
     }
     return this.chatService.list(claims.userId);
+  }
+
+  @Get('message/:id')
+  getMessages(
+    @Headers('authorization') token: string,
+    @Param() { id }: { id: string },
+  ) {
+    const claims = this.utilsService.getClaims(token);
+    if (!claims) {
+      return { success: false, message: 'Invalid token.' };
+    }
+    return this.chatService.getMessages(claims.userId, parseInt(id));
   }
 
   @Post('message')

@@ -63,15 +63,13 @@ export class AuthService {
         },
       });
 
-      const { password, ...safeUser } = user;
-      console.log(password);
+      const { password: _, ...safeUser } = user;
       return {
         success: true,
         message: 'User registered successfully.',
         user: safeUser,
       };
     } catch (error) {
-      console.error('Error during signup:', error.message || error);
       throw new BadRequestException(
         error.message || 'Something went wrong during signup.',
       );

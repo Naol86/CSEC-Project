@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { ChatDto, MessageDto, Role } from './dto/chat.dto';
 import OpenAI from 'openai';
 import { UtilsService } from 'src/utils/utils.service';
+import { env } from 'process';
 
 @Injectable()
 export class ChatService {
@@ -31,11 +32,19 @@ export class ChatService {
     if (!body.chatId) {
       const chat = await this.create(userId);
       body.chatId = chat.data.chat_id;
+    } else {
+      // check if the user is authorize to access this chat
+      const res = await this.utils.chatAuthorization(userId, body.chatId);
+      if (res.success) {
+        return {
+          success: false,
+          message: 'not authorize to this chat',
+        };
+      }
     }
 
     // Fetch last messages for the chatId
     const lastMessages = await this.utils.getLastMessage(body.chatId);
-    console.log(lastMessages, 'last messages');
 
     if (lastMessages && lastMessages.length > 0) {
       lastMessages.forEach((msg) => {
@@ -85,9 +94,8 @@ export class ChatService {
   }
 
   async ai(message: MessageDto[]) {
-    console.log(message);
     const openai = new OpenAI({
-      apiKey: '',
+      apiKey: env.AI_API_KEY,
       baseURL: 'https://api.x.ai/v1',
     });
 
@@ -100,5 +108,21 @@ export class ChatService {
     return {
       response: completion.choices[0].message,
     };
+  }
+
+  async getMessages(userId: number, chatId: number) {
+    const res = await this.utils.chatAuthorization(userId, chatId);
+    if (res.success) {
+      return res;
+    }
+    const messages = await this.prisma.chat.findMany({
+      where: {
+        chat_id: chatId,
+      },
+      orderBy: {
+        created_at: 'desc',
+      },
+    });
+    return { success: true, data: messages };
   }
 }

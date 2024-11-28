@@ -36,7 +36,24 @@ export class UtilsService {
     return await this.prisma.chat.findMany({
       where: { chat_id: chatId },
       orderBy: { created_at: 'asc' },
-      take: 10,
+      take: 25,
     });
+  }
+
+  async chatAuthorization(userId: number, chatId: number) {
+    const chat = await this.prisma.chatUsers.findUnique({
+      where: {
+        chat_id: chatId,
+      },
+    });
+
+    if (!chat) {
+      return { success: true, message: 'Chat not exit' };
+    }
+
+    return {
+      success: chat.user_id !== userId,
+      message: 'Your are not allowed',
+    };
   }
 }
