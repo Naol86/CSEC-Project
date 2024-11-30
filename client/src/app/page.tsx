@@ -1,61 +1,61 @@
+"use client";
 import AiResponse from "@/components/Chat/AiResponse";
 import UserChat from "@/components/Chat/UserChat";
+import TestCom from "@/components/TestCom";
+import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Textarea } from "@/components/ui/textarea";
+import CustomSessionProvider from "@/hooks/CustomeSessionProvider";
 import { Bolt, CircleArrowUp } from "lucide-react";
+import { useState } from "react";
+
+type FormData = {
+  message: string;
+};
+type ChatMessage = {
+  sender: "user" | "response";
+  message: string;
+};
 
 export default function Home() {
-  const chatHistory = [
-    {
-      sender: "user",
-      message: "Give me a list of fruits.",
-    },
-    {
-      sender: "response",
-      message: "Apples, Bananas, Oranges, Mangoes, Grapes",
-    },
-    {
-      sender: "user",
-      message: "Hello",
-    },
-    {
-      sender: "response",
-      message: "Hi there! How can I assist you today?",
-    },
-    {
-      sender: "user",
-      message: "What is the capital of France?",
-    },
-    {
-      sender: "response",
-      message: "The capital of France is Paris.",
-    },
-    {
-      sender: "user",
-      message: "What is quantum entanglement?",
-    },
-    {
-      sender: "response",
-      message:
-        "Quantum entanglement is a physical phenomenon that occurs when pairs or groups of particles are generated, interact, or share spatial proximity in ways such that the quantum state of each particle cannot be described independently of the state of the others, even when the particles are separated by a large distance.",
-    },
-    {
-      sender: "user",
-      message: "Goodbye",
-    },
-    {
-      sender: "response",
-      message: "Goodbye! Have a great day!",
-    },
-    {
-      sender: "user",
-      message: "Tell me a joke!",
-    },
-    {
-      sender: "response",
-      message: "I'm sorry, I didn't understand that. Can you please clarify?",
-    },
-  ];
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
+
+  const [formData, setFormData] = useState<FormData>({ message: "" });
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    setChatHistory((prev) => [
+      ...prev,
+      { sender: "user", message: formData.message },
+    ]);
+
+    try {
+      const res = await fetch("http://localhost:3000/test", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: formData.message }),
+      });
+
+      const response = await res.json();
+
+      console.log(response);
+      if (response.statusCode && response.statusCode != 200) {
+        return;
+      }
+
+      setChatHistory((prev) => [
+        ...prev,
+        { sender: "response", message: response.response.content },
+      ]);
+    } catch (error) {
+      console.error("Error fetching response:", error);
+    } finally {
+      setFormData({ message: "" });
+    }
+  };
 
   return (
     <div className="flex flex-col bg-custom-gradient2 h-screen p-2">
@@ -77,13 +77,26 @@ export default function Home() {
         ))}
       </div>
 
-      <div className="h-auto sm:h-[15%] p-2 px-5 flex flex-col justify-center relative">
+      <form
+        onSubmit={handleSubmit}
+        className="h-auto sm:h-[15%] p-2 px-5 flex flex-col justify-center relative"
+      >
+        <CustomSessionProvider>
+          <TestCom />
+        </CustomSessionProvider>
         <Textarea
-          placeholder="chat with Naol"
+          placeholder="Chat with Naol"
           className="rounded-xl h-14 sm:h-12 text-white border-2 border-white/50 focus:border-white/70 font-semibold resize-none overflow-hidden p-3 pr-14"
+          value={formData.message}
+          onChange={(e) => setFormData({ message: e.target.value })}
         />
-        <CircleArrowUp size={30} className="absolute right-10" />
-      </div>
+        <Button
+          type="submit"
+          className="absolute right-10 bg-none p-0 px-0 py-0"
+        >
+          <CircleArrowUp size={30} />
+        </Button>
+      </form>
     </div>
   );
 }
