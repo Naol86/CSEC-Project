@@ -13,7 +13,8 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const res = await fetch(`${process.env.BACKEND_URL}/auth/signin`, {
+        console.log("trying to login ");
+        const res = await fetch(`${process.env.BACKEND_URL}/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -25,11 +26,16 @@ export const authOptions: NextAuthOptions = {
         const user = await res.json();
         console.log(user, "user credentials");
 
-        if (user.success) {
+        if (user.user) {
+          console.log("going to next step");
           return {
-            id: user.id || credentials?.email, // Ensure `id` is present
-            token: user.token,
-            email: credentials?.email,
+            id: user.user.id, // Ensure `id` is present
+            token: user.accessToken,
+            email: user.user.email,
+            firstName: user.user.firstName,
+            lastName: user.user.lastName,
+            profilePicture: user.user.profilePicture,
+            isEmailVerified: user.user.isEmailVerified,
           } as User;
         }
 
@@ -54,6 +60,10 @@ export const authOptions: NextAuthOptions = {
             id: user.id,
             email: user.email,
             token: credentials?.token as string,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            profilePicture: user.profilePicture,
+            isEmailVerified: user.isEmailVerified,
           };
         }
 
@@ -68,6 +78,10 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id; // Include `id`
         token.token = user.token; // Include backend token
         token.email = user.email;
+        token.firstName = user.firstName;
+        token.lastName = user.lastName;
+        token.profilePicture = user.profilePicture;
+        token.isEmailVerified = user.isEmailVerified;
       }
       return token;
     },
@@ -76,9 +90,20 @@ export const authOptions: NextAuthOptions = {
         id: token.id as string, // Include `id`
         email: token.email as string,
         token: token.token as string, // Include backend token
+        firstName: token.firstName as string,
+        lastName: token.lastName as string,
+        profilePicture: token.profilePicture as string,
+        isEmailVerified: token.isEmailVerified as boolean,
       };
       return session;
     },
+    async redirect({ baseUrl }) {
+      return baseUrl;
+    },
+  },
+  pages: {
+    signIn: "/auth/signin",
+    signOut: "/auth/signout",
   },
 };
 

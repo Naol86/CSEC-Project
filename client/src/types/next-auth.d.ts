@@ -5,6 +5,10 @@ declare module "next-auth" {
     id: string; // Add this to satisfy the type requirement
     token: string;
     email: string;
+    firstName: string;
+    lastName: string;
+    profilePicture: string;
+    isEmailVerified: boolean;
   }
 
   interface Session {
@@ -12,6 +16,10 @@ declare module "next-auth" {
       id: string;
       token: string;
       email: string;
+      firstName: string;
+      lastName: string;
+      profilePicture: string;
+      isEmailVerified: boolean;
     };
   }
 
@@ -19,5 +27,9 @@ declare module "next-auth" {
     id: string;
     token: string;
     email: string;
+    firstName: string;
+    lastName: string;
+    profilePicture: string;
+    isEmailVerified: boolean;
   }
 }
