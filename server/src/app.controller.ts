@@ -10,8 +10,4 @@ export class AppController {
     return await this.appService.getHello();
   }
 
-  @Post('/test')
-  async testMessage(@Body() body) {
-    return await this.appService.testMessage(body);
-  }
 }
