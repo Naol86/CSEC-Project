@@ -2,25 +2,64 @@
 @tailwind components;
 @tailwind utilities;
 
+/* General styles */
 .grow {
   overflow-y: auto; /* Enable vertical scrolling */
   scrollbar-width: thin; /* Firefox: Minimal scrollbar */
   scrollbar-color: #888 #1a1a1a; /* Firefox: Thumb and track color */
 }
 
-.grow::-webkit-scrollbar {
-  width: 8px; /* Narrow scrollbar width for Chrome, Edge, and Safari */
+.x-scrollbar {
+  overflow-x: auto; /* Enable horizontal scrolling */
+  scrollbar-width: thin; /* Firefox: Minimal scrollbar width */
+  scrollbar-color: #888 #1a1a1a; /* Firefox: Thumb and track color */
 }
 
-.grow::-webkit-scrollbar-thumb {
+/* Webkit styles for x-scrollbar */
+.x-scrollbar::-webkit-scrollbar {
+  height: 4px; /* Horizontal scrollbar height */
+}
+
+.x-scrollbar::-webkit-scrollbar-thumb {
   background-color: #888; /* Scrollbar thumb color */
   border-radius: 4px; /* Rounded scrollbar edges */
 }
 
-.grow::-webkit-scrollbar-thumb:hover {
+.x-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: #555; /* Darker thumb on hover */
 }
 
-.grow::-webkit-scrollbar-track {
+.x-scrollbar::-webkit-scrollbar-track {
   background: #000000; /* Scrollbar track (background) color */
+}
+
+/* Consistent hover styles for .grow and .x-scrollbar */
+.grow::-webkit-scrollbar-thumb:hover,
+.x-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Darker thumb on hover */
+}
+
+/* Firefox global scrollbar styles */
+* {
+  scrollbar-width: thin; /* Minimal scrollbar width */
+  scrollbar-color: #888 #1a1a1a; /* Thumb and track colors */
+}
+
+/* Webkit-based browsers (Chrome, Safari, Edge) global scrollbar styles */
+*::-webkit-scrollbar {
+  width: 8px; /* Vertical scrollbar width */
+  height: 4px; /* Horizontal scrollbar height */
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #888; /* Scrollbar thumb color */
+  border-radius: 4px; /* Rounded corners for the thumb */
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Darker color on hover */
+}
+
+*::-webkit-scrollbar-track {
+  background-color: #1a1a1a; /* Scrollbar track (background) color */
 }

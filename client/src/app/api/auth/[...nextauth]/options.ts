@@ -13,7 +13,6 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        console.log("trying to login ");
         const res = await fetch(`${process.env.BACKEND_URL}/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -24,10 +23,8 @@ export const authOptions: NextAuthOptions = {
         });
 
         const user = await res.json();
-        console.log(user, "user credentials");
 
         if (user.user) {
-          console.log("going to next step");
           return {
             id: user.user.id, // Ensure `id` is present
             token: user.accessToken,
@@ -55,7 +52,6 @@ export const authOptions: NextAuthOptions = {
 
         if (res.ok) {
           const user = await res.json();
-          console.log(user, "user goole");
           return {
             id: user.id,
             email: user.email,
@@ -98,7 +94,7 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async redirect({ baseUrl }) {
-      return baseUrl;
+      return `${baseUrl}/ai`;
     },
   },
   pages: {

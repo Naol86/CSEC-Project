@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import AppSidebar from "@/components/Sidebar/AppSidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,12 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="sm:flex h-screen text-white">
-        <SidebarProvider>
-          <AppSidebar />
-          <main className="grow bg-custom-gradient2 text-white">
-            {children}
-          </main>
-        </SidebarProvider>
+        <main className="grow bg-custom-gradient2 text-white">{children}</main>
       </body>
     </html>
   );
