@@ -1,13 +1,19 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default function LoginPage() {
+  const handleGoogle = async () => {
+    const res = await redirect(`http://localhost:8000/auth/google`);
+    console.log("res is ", res);
+  };
   return (
-    <div className="flex min-h-screen">
-      <div className="flex w-full flex-col justify-between p-8 md:w-1/2 lg:p-12">
-        <div className="mx-auto w-full max-w-md">
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 pb-3">
+      <div className="flex w-full flex-col justify-center items-center h-full order-2 md:order-1">
+        <div className="mx-auto w-full max-w-md px-2">
           <div className="space-y-6">
             <div className="space-y-3">
               <h1 className="text-3xl font-semibold tracking-tight">
@@ -24,7 +30,7 @@ export default function LoginPage() {
             <div className="space-y-4">
               <div className="space-y-2">
                 <label
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  className="text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   htmlFor="email"
                 >
                   Email
@@ -41,7 +47,7 @@ export default function LoginPage() {
               </div>
               <div className="space-y-2">
                 <label
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  className="text-sm font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   htmlFor="password"
                 >
                   Password
@@ -83,6 +89,7 @@ export default function LoginPage() {
                 variant="default"
                 className="w-full rounded-[10px]"
                 type="button"
+                onClick={handleGoogle}
               >
                 <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                   <path
@@ -127,12 +134,11 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
-      <div className="hidden w-1/2 md:block">
+      <div className="order-1 md:order-2 relative w-full h-full min-h-[40vh]">
         <Image
           src="/image_fx_.jpg"
           alt="Decorative floral still life painting"
-          width={1024}
-          height={1024}
+          fill
           className="h-full w-full object-cover"
           priority
         />

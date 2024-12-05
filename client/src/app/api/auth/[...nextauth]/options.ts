@@ -93,9 +93,6 @@ export const authOptions: NextAuthOptions = {
       };
       return session;
     },
-    async redirect({ baseUrl }) {
-      return `${baseUrl}/ai`;
-    },
   },
   pages: {
     signIn: "/auth/signin",
